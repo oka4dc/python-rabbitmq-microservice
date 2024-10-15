@@ -4,7 +4,10 @@ def callback(ch, method, properties, body):
     print(f" [x] Received {body}")
 
 def consume_message():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    credentials = pika.PlainCredentials('user', 'password')
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost', port=5672, credentials=credentials)
+    )
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')

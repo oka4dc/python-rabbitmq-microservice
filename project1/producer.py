@@ -2,7 +2,10 @@ import pika
 import time
 
 def send_message():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    credentials = pika.PlainCredentials('user', 'password')
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost', port=5672, credentials=credentials)
+    )
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')
@@ -17,3 +20,16 @@ def send_message():
 
 if __name__ == "__main__":
     send_message()
+"""
+  producer:
+    build: .
+    command: python producer.py
+    depends_on:
+      - rabbitmq
+
+  consumer:
+    build: .
+    command: python consumer.py
+    depends_on:
+      - rabbitmq
+"""
